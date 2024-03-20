@@ -84,7 +84,8 @@ export class usuarioController {
   async validateTokenUser(req: Request, res: Response) {
     try {
       const token = req.cookies["token"];
-      const verifyToken: any = await jwtAdapter.validateToken(token);
+      const {data:verifyToken}: any = await jwtAdapter.validateToken(token);
+      
       const userData = await prisma.usuario.findUnique({
         where: {
           id: verifyToken,
@@ -99,7 +100,7 @@ export class usuarioController {
         },
       }); //hojo con esta linea
     } catch (error) {
-      return res.status(401).json(null);
+      return res.status(401).json('No hay un token de usuario');
     }
   }
 
