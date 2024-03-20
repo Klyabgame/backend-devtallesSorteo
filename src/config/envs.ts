@@ -13,7 +13,8 @@ export const envs = {
   token: get('token').default('public').asString(),
   DATABASE_URL: get('DATABASE_URL').default('public').asString(),
   TOKEN_SECRET: get('TOKEN_SECRET').default('public').asString(),
-  BACKEND_URL: get('BACKEND_URL').default('public').asString()
+  BACKEND_URL: get('BACKEND_URL').default('public').asString(),
+  FRONTEND_URL:get('FRONTEND_URL').default('public').asString(),
 
 }
 

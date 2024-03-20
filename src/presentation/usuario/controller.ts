@@ -32,7 +32,7 @@ export class usuarioController {
 
     const token = await jwtAdapter.generateToken(emailExist.id);
 
-    res.cookie("token", token, { httpOnly: true });
+    res.cookie("token", token, { httpOnly: true,secure:true,sameSite:'none' });
 
     return res.status(200).json(emailExist.email);
   }
