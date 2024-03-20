@@ -25,7 +25,6 @@ export class Server {
 
   async start() {
     //* Middlewares
-    this.app.use(express.json()); // raw
     this.app.use(
       cors({
         origin: [
@@ -37,6 +36,8 @@ export class Server {
         credentials: true,
       })
     );
+
+    this.app.use(express.json()); // raw
     this.app.use(morgan("dev"));
     this.app.use(express.urlencoded({ extended: true })); // x-www-form-urlencoded
     this.app.use(cookieParser());
