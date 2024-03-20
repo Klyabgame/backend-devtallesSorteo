@@ -2,6 +2,7 @@ import express, { Router } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
+import { envs } from "../config";
 
 interface Options {
   port: number;
@@ -28,7 +29,7 @@ export class Server {
     this.app.use(
       cors({
         origin: [
-          "https://devtalles-codequest-sorteos-gamma.vercel.app",
+          `${envs.FRONTEND_URL}/`,
           "http://localhost:3000",
           "http://localhost:3001",
         ],
