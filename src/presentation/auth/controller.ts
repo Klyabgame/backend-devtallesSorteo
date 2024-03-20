@@ -20,7 +20,7 @@ export class authController {
           client_secret: envs.ClientSecret,
           grant_type: "authorization_code",
           code: code,
-          redirect_uri: `${envs.BACKEND_URL}/api/auth/discord/redirect`,
+          redirect_uri: `https://backend-devtallessorteo-w707.onrender.com/api/auth/discord/redirect`,
         });
 
         const output = await fetch("https://discord.com/api/v10/oauth2/token", {
@@ -94,7 +94,7 @@ export class authController {
             );
             if (participanteExistente.length > 0) {
               //REVISAR ESTE CODIGO
-              res.writeHead(302, { Location: `${envs.FRONTEND_URL}/error` });
+              res.writeHead(302, { Location: `https://front-next-front-sorteo.vercel.app/error` });
               res.end();
               return;
             }
@@ -109,13 +109,13 @@ export class authController {
             });
           }
         } else {
-          res.writeHead(302, { Location: `${envs.FRONTEND_URL}/user-notfound`});
+          res.writeHead(302, { Location: `https://front-next-front-sorteo.vercel.app/user-notfound`});
           res.end();
           return;
         }
 
         // Supongamos que 'req' es de tipo IncomingMessage y 'res' es de tipo ServerResponse
-        res.writeHead(302, { Location: `${envs.FRONTEND_URL}/success`});
+        res.writeHead(302, { Location: `https://front-next-front-sorteo.vercel.app/success`});
         res.end();
       }
     } catch (error) {

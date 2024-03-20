@@ -28,6 +28,7 @@ export class Server {
     this.app.use(
       cors({
         origin: [
+          "https://front-next-front-sorteo.vercel.app",
           `${envs.FRONTEND_URL}/`,
           "http://localhost:3000",
           "http://localhost:3001",
