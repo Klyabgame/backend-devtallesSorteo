@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 
 export const jwtAdapter = {
+  
   generateToken: async (payload: any, jwt_seed:string = process.env.TOKEN_SECRET! ) => {
     return new Promise((resolve) => {
       jwt.sign({data:payload}, jwt_seed, {expiresIn:'2h'}, (err: any, token: any) => {

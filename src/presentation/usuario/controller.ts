@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { prisma } from "../../data";
 import { bcryptAdapter, jwtAdapter } from "../../config";
+import { maxAgeHour } from "../../helpers/maxAgeCookieHour.helpers";
 
 export class usuarioController {
   constructor() {
@@ -31,10 +32,9 @@ export class usuarioController {
       });
 
     const token = await jwtAdapter.generateToken(emailExist.id);
-    console.log({to:token});
     
 
-    res.cookie("token", token, { httpOnly: true,secure:true,sameSite:'none' });
+    res.cookie("token", token, { httpOnly: true,secure:true,sameSite:'none',maxAge:maxAgeHour(2) });
 
     return res.status(200).json(emailExist.email);
   }
@@ -110,11 +110,16 @@ export class usuarioController {
 
   async logoutUser(req: Request, res: Response) {
     try {
-      res.cookie("token", "", { expires: new Date(0) });
-
-      return res.sendStatus(200);
+      const token=req.cookies['token'];
+      if(!token) return res.status(400).json({err:'no existe un usuario activo'})
+      
+      res.clearCookie('token');
+      return res.status(200).json({
+          logout:'cerraste sesion correctamente'
+      });
     } catch (error) {
-      return res.status(401).json({ error: error });
+        return res.status(500).json({err:'Error al cerrar Sesion'});
+        
     }
   }
 }
