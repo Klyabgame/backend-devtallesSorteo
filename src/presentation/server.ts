@@ -33,8 +33,6 @@ export class Server {
           "http://localhost:3000",
           "http://localhost:3001", */
         ],
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'withCredentials', 'Access-Control-Allow-Origin', 'Access-Control-Allow-Headers', 'Access-Control-Allow-Methods'],
         credentials: true,
       })
     );
