@@ -24,7 +24,7 @@ export class Server {
 
   async start() {
     //* Middlewares
-    this.app.use(
+    /* this.app.use(
       cors({
         origin: [
           "https://front-next-front-sorteo.vercel.app",
@@ -36,7 +36,8 @@ export class Server {
         allowedHeaders: ['Content-Type', 'withCredentials', 'Access-Control-Allow-Origin', 'Access-Control-Allow-Headers', 'Access-Control-Allow-Methods'],
         credentials: true,
       })
-    );
+    ); */
+    this.app.use(cors());
 
     this.app.use(express.json()); // raw
     this.app.use(morgan("dev"));
