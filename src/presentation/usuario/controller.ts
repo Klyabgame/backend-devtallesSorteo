@@ -31,6 +31,8 @@ export class usuarioController {
       });
 
     const token = await jwtAdapter.generateToken(emailExist.id);
+    console.log({to:token});
+    
 
     res.cookie("token", token, { httpOnly: true,secure:true,sameSite:'none' });
 
@@ -84,11 +86,13 @@ export class usuarioController {
   async validateTokenUser(req: Request, res: Response) {
     try {
       const token = req.cookies["token"];
-      const {data:verifyToken}: any = await jwtAdapter.validateToken(token);
+      const verifyToken: any = await jwtAdapter.validateToken(token);
+      console.log({ve:verifyToken});
+      
       
       const userData = await prisma.usuario.findUnique({
         where: {
-          id: verifyToken,
+          id: verifyToken.data,
         },
       });
 

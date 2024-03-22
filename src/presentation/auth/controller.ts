@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { prisma } from "../../data";
-import { envs } from "../../config";
 import { parse } from "url";
 
 export class authController {
@@ -16,8 +15,8 @@ export class authController {
 
       if (code) {
         const formData = new URLSearchParams({
-          client_id: envs.ClientID,
-          client_secret: envs.ClientSecret,
+          client_id: process.env.ClientID!,
+          client_secret: process.env.ClientSecret!,
           grant_type: "authorization_code",
           code: code,
           redirect_uri: `https://backend-devtallessorteo-w707.onrender.com/api/auth/discord/redirect`,
@@ -94,7 +93,7 @@ export class authController {
             );
             if (participanteExistente.length > 0) {
               //REVISAR ESTE CODIGO
-              res.writeHead(302, { Location: `https://front-next-front-sorteo.vercel.app/error` });
+              res.writeHead(302, { Location: `${process.env.FRONTEND_URL}/error` });
               res.end();
               return;
             }
@@ -109,13 +108,13 @@ export class authController {
             });
           }
         } else {
-          res.writeHead(302, { Location: `https://front-next-front-sorteo.vercel.app/user-notfound`});
+          res.writeHead(302, { Location: `${process.env.FRONTEND_URL}/user-notfound`});
           res.end();
           return;
         }
 
         // Supongamos que 'req' es de tipo IncomingMessage y 'res' es de tipo ServerResponse
-        res.writeHead(302, { Location: `https://front-next-front-sorteo.vercel.app/success`});
+        res.writeHead(302, { Location: `${process.env.FRONTEND_URL}/success`});
         res.end();
       }
     } catch (error) {

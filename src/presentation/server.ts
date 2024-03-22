@@ -2,7 +2,6 @@ import express, { Router } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
-import { envs } from "../config";
 
 interface Options {
   port: number;
@@ -29,7 +28,7 @@ export class Server {
       cors({
         origin: [
           "https://front-next-front-sorteo.vercel.app",
-          `${envs.FRONTEND_URL}/`,
+          `${process.env.FRONTEND_URL}/`,
           "http://localhost:3000",
           "http://localhost:3001",
         ],
