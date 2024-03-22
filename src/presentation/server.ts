@@ -2,6 +2,7 @@ import express, { Router } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
+import path from "path";
 
 interface Options {
   port: number;
@@ -24,20 +25,20 @@ export class Server {
 
   async start() {
     //* Middlewares
-    /* this.app.use(
+    this.app.use(
       cors({
         origin: [
-          "https://front-next-front-sorteo.vercel.app",
-          `${process.env.FRONTEND_URL}/`,
+          /* "https://front-next-front-sorteo.vercel.app", */
+          `${process.env.FRONTEND_URL}/`/* ,
           "http://localhost:3000",
-          "http://localhost:3001",
+          "http://localhost:3001", */
         ],
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
         allowedHeaders: ['Content-Type', 'withCredentials', 'Access-Control-Allow-Origin', 'Access-Control-Allow-Headers', 'Access-Control-Allow-Methods'],
         credentials: true,
       })
-    ); */
-    this.app.use(cors());
+    );
+    /* this.app.use(cors()); */
 
     this.app.use(express.json()); // raw
     this.app.use(morgan("dev"));
@@ -45,16 +46,16 @@ export class Server {
     this.app.use(cookieParser());
 
     //* Public Folder
-    /* this.app.use(express.static(this.publicPath)); */
+     this.app.use(express.static(this.publicPath)); 
 
     //* Routes
     this.app.use(this.routes);
 
-    //* SPA
-    /*this.app.get("*", (req, res) => {
+    
+    this.app.get("*", (req, res) => {
       const indexPath = path.join(__dirname + `../../../${this.publicPath}/index.html`);
       res.sendFile(indexPath);
-    }); */
+    });
 
     this.app.listen(this.port, () => {
       console.log(`Server running on port ${this.port}`);
