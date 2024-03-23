@@ -10,6 +10,16 @@ export class usuarioController {
     this.RegisterUsuario = this.RegisterUsuario.bind(this);
     this.DeleteUsuario = this.DeleteUsuario.bind(this);
     this.validateTokenUser = this.validateTokenUser.bind(this);
+    this.getUsers=this.getUsers.bind(this);
+  }
+
+
+  async getUsers(req: Request, res: Response){
+
+    const dataUsers=await prisma.usuario.findMany();
+
+    return res.status(200).json(dataUsers);
+
   }
 
   async loginUsuario(req: Request, res: Response) {

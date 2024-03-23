@@ -13,6 +13,7 @@ export class UsuarioRoutes {
 
     const controller=new usuarioController();
     // Definir las rutas
+    router.get('', controller.getUsers );
     router.post('/login', controller.loginUsuario );
     router.post('/logout', controller.logoutUser );
     router.post('/registro', controller.RegisterUsuario );
