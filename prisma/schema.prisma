@@ -24,7 +24,7 @@ model Sorteo {
   image         String?
   createdAt     DateTime       @default(now())
   participantes Participante[]
-  winner        String
+  winner        String?
 }
 
 
