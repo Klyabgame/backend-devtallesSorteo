@@ -86,7 +86,7 @@ export class usuarioController {
         },
       });
       const { password, ...rest } = registroDelete;
-      return res.status(200).json({ res: "Usuario eliminado correctamente", rest });
+      return res.status(200).json({ delete: "Usuario eliminado correctamente", rest });
     } catch (error) {
       console.log(error);
       return res.status(500).json({ error: "El usuario no existe" });
@@ -97,7 +97,6 @@ export class usuarioController {
     try {
       const token = req.cookies["token"];
       const verifyToken: any = await jwtAdapter.validateToken(token);
-      console.log({ve:verifyToken});
       
       
       const userData = await prisma.usuario.findUnique({
@@ -114,21 +113,21 @@ export class usuarioController {
         },
       }); //hojo con esta linea
     } catch (error) {
-      return res.status(401).json('No hay un token de usuario');
+      return res.status(401).json({error:'No hay un token de usuario'});
     }
   }
 
   async logoutUser(req: Request, res: Response) {
     try {
       const token=req.cookies['token'];
-      if(!token) return res.status(400).json({err:'no existe un usuario activo'})
+      if(!token) return res.status(400).json({error:'no existe un usuario activo'})
       
       res.clearCookie('token');
       return res.status(200).json({
           logout:'cerraste sesion correctamente'
       });
     } catch (error) {
-        return res.status(500).json({err:'Error al cerrar Sesion'});
+        return res.status(500).json({error:'Error al cerrar Sesion'});
         
     }
   }

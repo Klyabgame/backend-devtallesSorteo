@@ -46,13 +46,13 @@ export class ParticipanteController{
 
             return res.status(200).json(deleteParticipante);
         } catch (error) {
-            return res.status(400).json({ message: "El id del participante no existe" });
+            return res.status(400).json({ error: "El id del participante no existe" });
         }
     }
 
     async deleteParticipanteFull(req:Request,res:Response){
         const deleteParticipantes = await prisma.participante.deleteMany();
 
-        return res.status(200).json({ message: "Todos los participantes fueron borrados" });
+        return res.status(200).json({ error: "Todos los participantes fueron borrados" });
     }
 }
