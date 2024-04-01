@@ -14,6 +14,9 @@ export class SorteoController{
     async getSorteos(req:Request, res:Response){
 
         const sorteoData = await prisma.sorteo.findMany({
+            where:{
+                status:true,
+            },
             include: {
                 participantes: true,
               }
@@ -23,6 +26,7 @@ export class SorteoController{
         
 
     }
+
 
     async getSorteosOne(req:Request, res:Response){
 
@@ -36,6 +40,8 @@ export class SorteoController{
                 id: id,
             },
             });
+            if(!sorteoGetOne) return res.status(400).json({error:"el sorteo buscado no existe"});
+            if(sorteoGetOne.status===false) return res.status(400).json({error:"el sorteo buscado a sido eliminado"});
             return res.status(200).json({ sorteoGetOne });
 
         } catch (error) {
@@ -45,12 +51,12 @@ export class SorteoController{
     }
 
     async postSorteos(req:Request, res:Response){
-        const {name,description,startDate,image, winner , status,usuarioId} = req.body;
-
+        const {name,description,startDate,image, winner , status} = req.body;
+        
         try {
             const sorteoData={
                 name,
-                usuarioId,
+                usuarioId:req.user!.id,
                 description,
                 startDate,
                 image,
@@ -79,6 +85,7 @@ export class SorteoController{
         if(!isMongoId) return res.status(400).json({ error:'no enviaste un id valido' });
 
         const {name,description,startDate,status,image,winner}=req.body;
+
         const sorteoBody={
             name,
             description,
@@ -92,10 +99,15 @@ export class SorteoController{
 
             const sorteoPatch=await prisma.sorteo.update({
                 where:{
-                    id:id
+                    id:id,
+                    usuarioId:req.user!.id
                 },
                 data:sorteoBody
             })
+
+            if(!sorteoPatch) return res.status(400).json({error:'Error al actualizar el sorteo'});
+            if(!sorteoPatch.usuarioId) return res.status(400).json({error:'Usuario no valido'});
+            if(sorteoPatch.status===false) return res.status(400).json({error:'No puedes actualizar un sorteo eliminado'});
             return res.status(200).json({sorteoPatch });
             
         } catch (error) {
@@ -116,17 +128,21 @@ export class SorteoController{
 
             const findId=await prisma.sorteo.findUnique({
                 where:{
-                    id:id
+                    id:id,
+                    usuarioId:req.user!.id
                 }
             })
-            if(!findId) return res.status(400).json({ error:'no se encontro al usuario a eliminar en la bd' });
-            
-            const sorteoDelete=await prisma.sorteo.delete({
+            if(!findId) return res.status(400).json({ error:'no se encontro el sorteo a eliminar en la bd' });
+            if(findId.status===false) return res.status(400).json({ error:`el id:${id} del sorteo ya a sido eliminado` });
+            const sorteoDelete=await prisma.sorteo.update({
                 where:{
                     id:id
+                },
+                data:{
+                    status:false,
                 }
             })
-            return res.status(200).json({ sorteoDelete});
+            return res.status(200).json({ status:'delete',sorteoDelete});
 
         } catch (error) {
             console.log(error);

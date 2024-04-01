@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { SorteoController } from "./controller";
+import { validateTokenUser } from "../../middleware";
 
 export class SorteoRoutes {
   static get routes(): Router {
@@ -9,10 +10,10 @@ export class SorteoRoutes {
     // Definir las rutas
     router.get("/", controller.getSorteos);
     router.get("/:id", controller.getSorteosOne);
-    router.post("/", controller.postSorteos);
-    router.patch("/:id", controller.patchSorteos);
+    router.post("/",[validateTokenUser], controller.postSorteos);
+    router.patch("/:id",[validateTokenUser], controller.patchSorteos);
 
-    router.delete("/:id", controller.deleteSorteos);
+    router.delete("/:id",[validateTokenUser], controller.deleteSorteos);
 
     return router;
   }

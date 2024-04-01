@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { ParticipanteController } from './controller';
+import { validateTokenUser } from '../../middleware';
 
 
 
@@ -15,8 +16,8 @@ export class ParticipanteRoutes {
     // Definir las rutas
     router.get('/', controller.getParticipante );
   
-    router.delete('/:id', controller.deleteParticipanteOne );
-    router.delete('/', controller.deleteParticipanteFull );
+    router.delete('/:id',[validateTokenUser], controller.deleteParticipanteOne );
+    router.delete('/', [validateTokenUser],controller.deleteParticipanteFull );
 
 
     return router;

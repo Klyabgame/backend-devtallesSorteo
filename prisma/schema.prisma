@@ -7,32 +7,35 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-model Usuario {
-  id       String  @id @default(auto()) @map("_id") @db.ObjectId
-  email    String  @unique
-  password String
-  name     String?
+model Participante {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  avatar   String
+  email    String
+  sorteo   Sorteo  @relation(fields: [sorteoId], references: [id])
+  sorteoId String @db.ObjectId
+  username String
 }
 
 model Sorteo {
-  id            String         @id @default(auto()) @map("_id") @db.ObjectId
-  name          String
-  description   String
-  startDate     DateTime
-  status        Boolean        @default(true)
-  image         String?
-  createdAt     DateTime       @default(now())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime @db.Date @default(now())
+  description String
+  image       String?
+  name        String
+  startDate   DateTime? @db.Date
+  status      Boolean  @default(true)
   participantes Participante[]
-  winner        String?
+  usuario     Usuario?  @relation(fields: [usuarioId], references: [id])
+  usuarioId   String?  @db.ObjectId
+  winner      String?
 }
 
+//recordar eliminar el ? en usuario? y string? del usuario id
 
-model Participante {
-  id       String  @id @default(auto()) @map("_id") @db.ObjectId
-  username String
-  email    String
-  avatar   String?
-  sorteo   Sorteo  @relation(fields: [sorteoId], references: [id])
-  sorteoId String  @db.ObjectId
+model Usuario {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  email    String @unique
+  name     String
+  password String
+  sorteo   Sorteo[]
 }
