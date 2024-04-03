@@ -25,8 +25,8 @@ model Sorteo {
   startDate   DateTime? @db.Date
   status      Boolean  @default(true)
   participantes Participante[]
-  usuario     Usuario?  @relation(fields: [usuarioId], references: [id])
-  usuarioId   String?  @db.ObjectId
+  usuario     Usuario  @relation(fields: [usuarioId], references: [id])
+  usuarioId   String  @db.ObjectId
   winner      String?
 }
 

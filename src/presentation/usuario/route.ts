@@ -20,7 +20,7 @@ export class UsuarioRoutes {
 
     router.delete('/:id', controller.DeleteUsuario );
     
-    router.get('/validate-token', controller.validateTokenUser );
+    router.get('/validate-tokenRefresh', controller.ValidateRefreshToken );
 
 
 

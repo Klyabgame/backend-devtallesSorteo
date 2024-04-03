@@ -52,18 +52,19 @@ export class SorteoController{
 
     async postSorteos(req:Request, res:Response){
         const {name,description,startDate,image, winner , status} = req.body;
+
+        if(!req.user) return res.status(400).json({error:'Usuario no autenticado'});
         
         try {
             const sorteoData={
                 name,
-                usuarioId:req.user!.id,
+                usuarioId:req.user.id!,
                 description,
                 startDate,
                 image,
                 winner,
                 status,
             }
-            if (!sorteoData.usuarioId) return res.status(400).json({error:'el sorteo debe ser creado por un usuario existente'});
 
             const sorteoPost = await prisma.sorteo.create({
                 data:sorteoData
@@ -80,6 +81,7 @@ export class SorteoController{
     async patchSorteos(req:Request, res:Response){
 
         const {id}=req.params;
+        
         if(!id) return res.status(400).json({ error:'no enviaste un id' });
         const isMongoId=isValidObjectId(id);            
         if(!isMongoId) return res.status(400).json({ error:'no enviaste un id valido' });
@@ -96,7 +98,7 @@ export class SorteoController{
         }
 
         try {
-
+            console.log({ids:req.user?.id,id});
             const sorteoPatch=await prisma.sorteo.update({
                 where:{
                     id:id,
@@ -104,6 +106,8 @@ export class SorteoController{
                 },
                 data:sorteoBody
             })
+
+            
 
             if(!sorteoPatch) return res.status(400).json({error:'Error al actualizar el sorteo'});
             if(!sorteoPatch.usuarioId) return res.status(400).json({error:'Usuario no valido'});

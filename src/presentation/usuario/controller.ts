@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../../data";
 import { bcryptAdapter, jwtAdapter } from "../../config";
-import { maxAgeHour } from "../../helpers/maxAgeCookieHour.helpers";
 
 export class usuarioController {
   constructor() {
@@ -9,7 +8,7 @@ export class usuarioController {
     this.logoutUser = this.logoutUser.bind(this);
     this.RegisterUsuario = this.RegisterUsuario.bind(this);
     this.DeleteUsuario = this.DeleteUsuario.bind(this);
-    this.validateTokenUser = this.validateTokenUser.bind(this);
+    this.ValidateRefreshToken = this.ValidateRefreshToken.bind(this);
     this.getUsers=this.getUsers.bind(this);
   }
 
@@ -41,10 +40,8 @@ export class usuarioController {
         error: "El usuario o la contraseña son incorrectos-password",
       });
 
-    const token = await jwtAdapter.generateToken(emailExist.id);
-    
-
-    res.cookie("token", token, { httpOnly: true,secure:true,sameSite:'none',maxAge:maxAgeHour(2) });
+    await jwtAdapter.generateToken(emailExist.id);
+    await jwtAdapter.generateTokenRefresh(emailExist.id,res);
 
     return res.status(200).json(emailExist.email);
   }
@@ -93,36 +90,30 @@ export class usuarioController {
     }
   }
 
-  async validateTokenUser(req: Request, res: Response) {
+  async ValidateRefreshToken(req: Request, res: Response) {
     try {
-      const token = req.cookies["token"];
-      const verifyToken: any = await jwtAdapter.validateToken(token);
+      const tokenRefresh = req.cookies["tokenRefresh"];
       
+      if(!tokenRefresh) return res.status(400).json({error:'no hay un tokenRefresh en la solicitud'});
+      const verifyToken: any = await jwtAdapter.validateToken(tokenRefresh);
+      if(!verifyToken) return  res.status(401).json({error:'tokenRefresh invalido'});
       
-      const userData = await prisma.usuario.findUnique({
-        where: {
-          id: verifyToken.data,
-        },
-      });
+      const tokenId:any=await jwtAdapter.generateToken(verifyToken.data);
 
-      return res.status(200).json({
-        user: {
-          id: userData?.id,
-          email: userData?.email,
-          name: userData?.name,
-        },
-      }); //hojo con esta linea
+      res.json({token:tokenId})
+      
     } catch (error) {
-      return res.status(401).json({error:'No hay un token de usuario'});
+      console.log(error);
+      return res.status(500).json({error:'ocurrio un error al generar el token'});
     }
   }
 
   async logoutUser(req: Request, res: Response) {
     try {
-      const token=req.cookies['token'];
+      const token=req.cookies['tokenRefresh'];
       if(!token) return res.status(400).json({error:'no existe un usuario activo'})
       
-      res.clearCookie('token');
+      res.clearCookie('tokenRefresh');
       return res.status(200).json({
           logout:'cerraste sesion correctamente'
       });
