@@ -24,16 +24,17 @@ export class Server {
   }
 
   async start() {
+
+    const whiteList=[process.env.ORIGIN1,process.env.LocalOrigin1];
     //* Middlewares
     this.app.use(
       cors({
-        origin: [
-          "https://front-next-front-sorteo.vercel.app",
-          /* `${process.env.FRONTEND_URL}/` *//* , */
-          "http://localhost:3000",
-          "http://localhost:3001",
-        ],
-        credentials: true,
+        origin: function(origin,callback){
+          if (whiteList.includes(origin)) {
+            return callback(null,origin)
+          }
+          return callback(new Error('Error de cors origin: '+origin+'No autorizado'));
+        }
       })
     );
     /* this.app.use(cors()); */
